@@ -13,14 +13,13 @@ services:
         - GID=${GID:-1000}
     container_name: nginx
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
       - php
       - redis
       - mysql
-      - mailhog
     networks:
       - laravel
 
@@ -108,14 +107,5 @@ services:
       - mysql
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan']
-    networks:
-      - laravel
-
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: mailhog
-    ports:
-      - 1025:1025
-      - 8025:8025
     networks:
       - laravel
