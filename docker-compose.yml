@@ -13,33 +13,34 @@ services:
         - GID=${GID:-1000}
     container_name: nginx
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
       - php
       - redis
       - mysql
-      - mailhog
     networks:
       - laravel
 
   mysql:
-    image: mariadb:10.6
+    image: mariadb:latest
     container_name: mysql
     restart: unless-stopped
     tty: true
     ports:
       - 3306:3306
     environment:
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: test
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
       MYSQL_ROOT_PASSWORD: secret
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     networks:
       - laravel
+    volumes:
+      - ./mysql:/var/lib/mysql
 
   php:
     build:
@@ -82,7 +83,7 @@ services:
       - laravel
 
   npm:
-    image: node:13.7
+    image: node:14
     container_name: npm
     volumes:
       - ./src:/var/www/html
@@ -108,14 +109,5 @@ services:
       - mysql
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan']
-    networks:
-      - laravel
-
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: mailhog
-    ports:
-      - 1025:1025
-      - 8025:8025
     networks:
       - laravel
